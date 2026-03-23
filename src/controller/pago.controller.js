@@ -123,7 +123,6 @@ const obtenerPagosPorEstado = async (req, res) => {
 // C: CREATE - Crear nuevo pago
 const crearPago = async (req, res) => {
     try {
-        // ✅ Se incluyen estado_pago y referencia
         const { id_pedido, metodo_pago, monto, estado_pago, referencia } = req.body;
         
         if (!id_pedido || !metodo_pago || !monto) {
@@ -132,7 +131,7 @@ const crearPago = async (req, res) => {
             });
         }
 
-        if (isNaN(monto) || parseFloat(monto) <= 0) {
+        if (Number.isNaN(Number(monto)) || Number.parseFloat(monto) <= 0) {
             return res.status(400).json({ msg: "El monto debe ser un número positivo." });
         }
 
@@ -143,7 +142,6 @@ const crearPago = async (req, res) => {
             });
         }
 
-        // ✅ Validar estado_pago si se envía
         if (estado_pago && !ESTADOS_PAGO_VALIDOS.includes(estado_pago)) {
             return res.status(400).json({ 
                 msg: "Estado de pago no válido.",
@@ -156,16 +154,16 @@ const crearPago = async (req, res) => {
             return res.status(400).json({ msg: "El pedido especificado no existe." });
         }
 
-        if (parseFloat(monto) > parseFloat(pedido.total)) {
+        if (Number.parseFloat(monto) > Number.parseFloat(pedido.total)) {
             return res.status(400).json({ 
                 msg: `El monto del pago (${monto}) no puede ser mayor al total del pedido (${pedido.total}).` 
             });
         }
 
         const nuevoPago = await Pago.create({ 
-            id_pedido: parseInt(id_pedido),
+            id_pedido: Number.parseInt(id_pedido),
             metodo_pago: metodo_pago.toLowerCase(),
-            monto: parseFloat(monto),
+            monto: Number.parseFloat(monto),
             fecha_pago: new Date(),
             estado_pago: estado_pago || 'pendiente',   // ✅
             referencia: referencia || null              // ✅
@@ -199,7 +197,6 @@ const crearPago = async (req, res) => {
 const actualizarPago = async (req, res) => {
     try {
         const { id } = req.params;
-        // ✅ Se incluyen estado_pago y referencia
         const { id_pedido, metodo_pago, monto, fecha_pago, estado_pago, referencia } = req.body;
         
         const pago = await Pago.findByPk(id);
@@ -212,8 +209,8 @@ const actualizarPago = async (req, res) => {
             if (!pedido) {
                 return res.status(400).json({ msg: "El pedido especificado no existe." });
             }
-            const montoActualizar = monto !== undefined ? parseFloat(monto) : parseFloat(pago.monto);
-            if (montoActualizar > parseFloat(pedido.total)) {
+            const montoActualizar = monto !== undefined ? Number.parseFloat(monto) : Number.parseFloat(pago.monto);
+            if (montoActualizar > Number.parseFloat(pedido.total)) {
                 return res.status(400).json({ 
                     msg: `El monto del pago (${montoActualizar}) no puede ser mayor al total del pedido (${pedido.total}).` 
                 });
@@ -227,11 +224,10 @@ const actualizarPago = async (req, res) => {
             });
         }
 
-        if (monto !== undefined && (isNaN(monto) || parseFloat(monto) <= 0)) {
+        if (monto !== undefined && (Number.isNaN(Number(monto)) || Number.parseFloat(monto) <= 0)) {
             return res.status(400).json({ msg: "El monto debe ser un número positivo." });
         }
 
-        // ✅ Validar estado_pago si se envía
         if (estado_pago && !ESTADOS_PAGO_VALIDOS.includes(estado_pago)) {
             return res.status(400).json({ 
                 msg: "Estado de pago no válido.",
@@ -240,9 +236,9 @@ const actualizarPago = async (req, res) => {
         }
 
         const datosLimpios = {};
-        if (id_pedido) datosLimpios.id_pedido = parseInt(id_pedido);
+        if (id_pedido) datosLimpios.id_pedido = Number.parseInt(id_pedido);
         if (metodo_pago) datosLimpios.metodo_pago = metodo_pago.toLowerCase();
-        if (monto !== undefined) datosLimpios.monto = parseFloat(monto);
+        if (monto !== undefined) datosLimpios.monto = Number.parseFloat(monto);
         if (fecha_pago) datosLimpios.fecha_pago = new Date(fecha_pago);
         if (estado_pago) datosLimpios.estado_pago = estado_pago;           // ✅
         if (referencia !== undefined) datosLimpios.referencia = referencia; // ✅
