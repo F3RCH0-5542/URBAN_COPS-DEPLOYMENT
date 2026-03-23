@@ -57,33 +57,33 @@ const crearDetallePedido = async (req, res) => {
         } = req.body;
 
         // Validar campos requeridos
-        if (!id_pedido || isNaN(id_pedido)) {
+        if (!id_pedido || Number.isNaN(Number(id_pedido))) {
             return res.status(400).json({ msg: "El ID del pedido es requerido y debe ser un número." });
         }
 
-        if (!id_producto || isNaN(id_producto)) {
+        if (!id_producto || Number.isNaN(Number(id_producto))) {
             return res.status(400).json({ msg: "El ID del producto es requerido y debe ser un número." });
         }
 
-        if (!cantidad || isNaN(cantidad) || parseInt(cantidad) <= 0) {
+        if (!cantidad || Number.isNaN(Number(cantidad)) || Number.parseInt(cantidad) <= 0) {
             return res.status(400).json({ msg: "La cantidad es requerida y debe ser mayor a 0." });
         }
 
-        if (!precio_unitario || isNaN(precio_unitario) || parseFloat(precio_unitario) < 0) {
+        if (!precio_unitario || Number.isNaN(Number(precio_unitario)) || Number.parseFloat(precio_unitario) < 0) {
             return res.status(400).json({ msg: "El precio unitario es requerido y debe ser un número positivo." });
         }
 
-        const subtotal = parseFloat(precio_unitario) * parseInt(cantidad);
+        const subtotal = Number.parseFloat(precio_unitario) * Number.parseInt(cantidad);
 
         const nuevoDetalle = await DetallePedido.create({ 
-            id_pedido: parseInt(id_pedido),
-            id_producto: parseInt(id_producto),
+            id_pedido: Number.parseInt(id_pedido),
+            id_producto: Number.parseInt(id_producto),
             nombre_producto: nombre_producto || null,    // ✅
             imagen: imagen || null,                      // ✅
-            cantidad: parseInt(cantidad),
-            precio_unitario: parseFloat(precio_unitario),
+            cantidad: Number.parseInt(cantidad),
+            precio_unitario: Number.parseFloat(precio_unitario),
             subtotal,
-            id_personalizacion: id_personalizacion ? parseInt(id_personalizacion) : null // ✅
+            id_personalizacion: id_personalizacion ? Number.parseInt(id_personalizacion) : null // ✅
         });
 
         res.status(201).json({ 
@@ -118,28 +118,28 @@ const actualizarDetallePedido = async (req, res) => {
             return res.status(404).json({ msg: "Detalle de pedido no encontrado." });
         }
 
-        if (cantidad !== undefined && (isNaN(cantidad) || parseInt(cantidad) <= 0)) {
+        if (cantidad !== undefined && (Number.isNaN(Number(cantidad)) || Number.parseInt(cantidad) <= 0)) {
             return res.status(400).json({ msg: "La cantidad debe ser mayor a 0." });
         }
 
-        if (precio_unitario !== undefined && (isNaN(precio_unitario) || parseFloat(precio_unitario) < 0)) {
+        if (precio_unitario !== undefined && (Number.isNaN(Number(precio_unitario)) || Number.parseFloat(precio_unitario) < 0)) {
             return res.status(400).json({ msg: "El precio unitario debe ser un número positivo." });
         }
 
         const datosLimpios = {};
-        if (id_pedido !== undefined) datosLimpios.id_pedido = parseInt(id_pedido);
-        if (id_producto !== undefined) datosLimpios.id_producto = parseInt(id_producto);
+        if (id_pedido !== undefined) datosLimpios.id_pedido = Number.parseInt(id_pedido);
+        if (id_producto !== undefined) datosLimpios.id_producto = Number.parseInt(id_producto);
         if (nombre_producto !== undefined) datosLimpios.nombre_producto = nombre_producto;  // ✅
         if (imagen !== undefined) datosLimpios.imagen = imagen;                              // ✅
-        if (cantidad !== undefined) datosLimpios.cantidad = parseInt(cantidad);
-        if (precio_unitario !== undefined) datosLimpios.precio_unitario = parseFloat(precio_unitario);
+        if (cantidad !== undefined) datosLimpios.cantidad = Number.parseInt(cantidad);
+        if (precio_unitario !== undefined) datosLimpios.precio_unitario = Number.parseFloat(precio_unitario);
         if (id_personalizacion !== undefined) {                                              // ✅
-            datosLimpios.id_personalizacion = id_personalizacion ? parseInt(id_personalizacion) : null;
+            datosLimpios.id_personalizacion = id_personalizacion ? Number.parseInt(id_personalizacion) : null;
         }
 
         // Recalcular subtotal si cambia cantidad o precio
-        const cantidadFinal = cantidad !== undefined ? parseInt(cantidad) : detalle.cantidad;
-        const precioFinal = precio_unitario !== undefined ? parseFloat(precio_unitario) : detalle.precio_unitario;
+        const cantidadFinal = cantidad !== undefined ? Number.parseInt(cantidad) : detalle.cantidad;
+        const precioFinal = precio_unitario !== undefined ? Number.parseFloat(precio_unitario) : detalle.precio_unitario;
         datosLimpios.subtotal = cantidadFinal * precioFinal;
 
         await detalle.update(datosLimpios);
