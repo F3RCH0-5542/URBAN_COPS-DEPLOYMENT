@@ -154,7 +154,7 @@ const crearVenta = async (req, res) => {
             await t.rollback();
             return res.status(400).json({ msg: "El pedido especificado no existe." });
         }
-        if (pedido.id_usuario !== parseInt(id_usuario)) {
+        if (pedido.id_usuario !== Number.parseInt(id_usuario)) {
             await t.rollback();
             return res.status(403).json({ msg: "El pedido no pertenece al usuario indicado." });
         }
@@ -170,16 +170,15 @@ const crearVenta = async (req, res) => {
             return res.status(400).json({ msg: "El pedido no tiene productos asociados." });
         }
 
-        
         // ✅ Calcular total desde los detalles del pedido
         const totalCalculado = detalles.reduce((sum, d) => {
-            return sum + (parseFloat(d.precio_unitario) * d.cantidad);
+            return sum + (Number.parseFloat(d.precio_unitario) * d.cantidad);
         }, 0);
 
         // Crear la venta
         const nuevaVenta = await Venta.create({
-            id_usuario: parseInt(id_usuario),
-            id_pedido: parseInt(id_pedido),
+            id_usuario: Number.parseInt(id_usuario),
+            id_pedido: Number.parseInt(id_pedido),
             fecha: fecha ? new Date(fecha) : new Date(),
             total: totalCalculado,
             estado: 'completada'  // Al crear la venta, la compra ya se realizó
@@ -254,10 +253,10 @@ const actualizarVenta = async (req, res) => {
         }
 
         const datosLimpios = {};
-        if (id_usuario) datosLimpios.id_usuario = parseInt(id_usuario);
-        if (id_pedido) datosLimpios.id_pedido = parseInt(id_pedido);
+        if (id_usuario) datosLimpios.id_usuario = Number.parseInt(id_usuario);
+        if (id_pedido) datosLimpios.id_pedido = Number.parseInt(id_pedido);
         if (fecha) datosLimpios.fecha = new Date(fecha);
-        if (total !== undefined) datosLimpios.total = parseFloat(total);
+        if (total !== undefined) datosLimpios.total = Number.parseFloat(total);
         if (estado) datosLimpios.estado = estado;
 
         await venta.update(datosLimpios);
@@ -315,10 +314,10 @@ const actualizarVentaParcial = async (req, res) => {
         }
 
         const datosLimpios = {};
-        if (data.id_usuario) datosLimpios.id_usuario = parseInt(data.id_usuario);
-        if (data.id_pedido) datosLimpios.id_pedido = parseInt(data.id_pedido);
+        if (data.id_usuario) datosLimpios.id_usuario = Number.parseInt(data.id_usuario);
+        if (data.id_pedido) datosLimpios.id_pedido = Number.parseInt(data.id_pedido);
         if (data.fecha) datosLimpios.fecha = new Date(data.fecha);
-        if (data.total !== undefined) datosLimpios.total = parseFloat(data.total);
+        if (data.total !== undefined) datosLimpios.total = Number.parseFloat(data.total);
         if (data.estado) datosLimpios.estado = data.estado;
 
         await venta.update(datosLimpios);
@@ -416,7 +415,7 @@ module.exports = {
     obtenerVentas,
     obtenerVentaPorId,
     obtenerVentasPorUsuario,
-    obtenerVentasPorEstado,     // ✅ nuevo
+    obtenerVentasPorEstado,
     crearVenta,
     actualizarVenta,
     actualizarVentaParcial,
