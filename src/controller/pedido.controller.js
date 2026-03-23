@@ -5,7 +5,6 @@ const Personalizacion = require("../models/Personalizacion");
 
 const ESTADOS_VALIDOS = ['pendiente', 'en_proceso', 'enviado', 'completado', 'cancelado'];
 
-// READ - Obtener todos los pedidos
 const obtenerPedidos = async (req, res) => {
     try {
         const pedidos = await Pedido.findAll({
@@ -23,7 +22,6 @@ const obtenerPedidos = async (req, res) => {
     }
 };
 
-// READ - Obtener pedido por ID con detalles
 const obtenerPedidoPorId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -69,7 +67,6 @@ const obtenerPedidoPorId = async (req, res) => {
     }
 };
 
-// READ - Mis pedidos con detalles, envío y método de pago
 const obtenerMisPedidos = async (req, res) => {
     try {
         const id_usuario = req.userId;
@@ -79,7 +76,6 @@ const obtenerMisPedidos = async (req, res) => {
             order: [['fecha_pedido', 'DESC']]
         });
 
-        // Enriquecer cada pedido con detalles + envío
         const pedidosCompletos = await Promise.all(pedidos.map(async (p) => {
             const id = p.id_pedido;
 
@@ -112,7 +108,6 @@ const obtenerMisPedidos = async (req, res) => {
     }
 };
 
-// READ - Obtener pedidos de un usuario
 const obtenerPedidosPorUsuario = async (req, res) => {
     try {
         const id_usuario = req.params.id_usuario || req.userId;
@@ -130,7 +125,6 @@ const obtenerPedidosPorUsuario = async (req, res) => {
     }
 };
 
-// READ - Obtener pedidos por estado
 const obtenerPedidosPorEstado = async (req, res) => {
     try {
         const { estado } = req.params;
@@ -148,7 +142,6 @@ const obtenerPedidosPorEstado = async (req, res) => {
     }
 };
 
-// CREATE - Crear pedido con descuento de stock automático
 const crearPedido = async (req, res) => {
     const transaction = await db.transaction();
     try {
@@ -165,7 +158,6 @@ const crearPedido = async (req, res) => {
         const usuario = await Usuario.findByPk(id_usuario);
         if (!usuario) { await transaction.rollback(); return res.status(400).json({ ok: false, msg: "Usuario no existe." }); }
 
-        // Verificar stock
         for (const producto of productos) {
             const [result] = await db.query(
                 `SELECT stock_disponible FROM productos WHERE id_producto = ? AND activo = 1`,
@@ -249,7 +241,6 @@ const crearPedido = async (req, res) => {
     }
 };
 
-// CREATE - Crear pedido desde personalización aprobada (con detalle_pedido)
 const crearPedidoDesdePersonalizacion = async (req, res) => {
     const transaction = await db.transaction();
     try {
@@ -276,14 +267,12 @@ const crearPedidoDesdePersonalizacion = async (req, res) => {
             return res.status(400).json({ msg: 'Esta personalización ya tiene un pedido asociado' });
         }
 
-        // ✅ Crear pedido con metodo_pago = 'personalizacion'
         const [id_pedido] = await db.query(
             `INSERT INTO pedido (id_usuario, total, fecha_pedido, estado, metodo_pago)
              VALUES (?, ?, NOW(), 'pendiente', 'personalizacion')`,
             { replacements: [id_usuario, pers.precio_adicional], type: db.QueryTypes.INSERT, transaction }
         );
 
-        // ✅ Insertar en detalle_pedido
         const nombreDetalle = `Personalización ${pers.tipo_personalizacion}`;
         const imagenDetalle = pers.imagen_referencia || 'assets/img/personalizacion.png';
         await db.query(
@@ -304,13 +293,11 @@ const crearPedidoDesdePersonalizacion = async (req, res) => {
             }
         );
 
-        // ✅ Crear venta automática
         await db.query(
             `INSERT INTO ventas (id_usuario, id_pedido, total, estado, fecha) VALUES (?, ?, ?, 'completada', NOW())`,
             { replacements: [id_usuario, id_pedido, pers.precio_adicional], type: db.QueryTypes.INSERT, transaction }
         );
 
-        // ✅ Vincular personalización con el nuevo pedido
         await pers.update({ id_pedido }, { transaction });
 
         await transaction.commit();
@@ -329,7 +316,6 @@ const crearPedidoDesdePersonalizacion = async (req, res) => {
     }
 };
 
-// UPDATE - Actualizar pedido
 const actualizarPedido = async (req, res) => {
     try {
         const { id } = req.params;
@@ -342,14 +328,16 @@ const actualizarPedido = async (req, res) => {
             const usuario = await Usuario.findByPk(id_usuario);
             if (!usuario) return res.status(400).json({ msg: "El usuario especificado no existe." });
         }
-        if (total !== undefined && (isNaN(total) || parseFloat(total) <= 0))
+
+        // ✅ SonarQube fix: Number.isNaN / Number.parseFloat / Number.parseInt
+        if (total !== undefined && (Number.isNaN(Number(total)) || Number.parseFloat(total) <= 0))
             return res.status(400).json({ msg: "El total debe ser un número positivo." });
         if (estado && !ESTADOS_VALIDOS.includes(estado))
             return res.status(400).json({ msg: "Estado no válido.", estadosValidos: ESTADOS_VALIDOS });
 
         const datosLimpios = {};
-        if (id_usuario)            datosLimpios.id_usuario   = parseInt(id_usuario);
-        if (total !== undefined)   datosLimpios.total        = parseFloat(total);
+        if (id_usuario)            datosLimpios.id_usuario   = Number.parseInt(id_usuario, 10);
+        if (total !== undefined)   datosLimpios.total        = Number.parseFloat(total);
         if (fecha_pedido)          datosLimpios.fecha_pedido = new Date(fecha_pedido);
         if (estado)                datosLimpios.estado       = estado;
         if (metodo_pago)           datosLimpios.metodo_pago  = metodo_pago;
@@ -364,7 +352,6 @@ const actualizarPedido = async (req, res) => {
     }
 };
 
-// DELETE - Eliminar pedido y devolver stock
 const eliminarPedido = async (req, res) => {
     const transaction = await db.transaction();
     try {
@@ -396,7 +383,6 @@ const eliminarPedido = async (req, res) => {
     }
 };
 
-// READ - Pedidos por rango de fechas
 const obtenerPedidosPorFecha = async (req, res) => {
     try {
         const { fecha_inicio, fecha_fin } = req.query;
