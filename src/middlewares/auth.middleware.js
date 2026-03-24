@@ -2,12 +2,11 @@ const jwt = require("jsonwebtoken");
 
 const validarToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
-  
+
+  // FIX: optional chaining en lugar de && encadenado
   if (!token) {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.slice(7);
-    }
+    const authHeader = req.headers.authorization ?? req.headers.Authorization;
+    token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
   }
 
   if (!token) {
@@ -17,7 +16,7 @@ const validarToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
-    req.rolId = decoded.rol;
+    req.rolId  = decoded.rol;
     next();
   } catch (err) {
     return res.status(401).json({ msg: "Token inválido o expirado" });
@@ -40,7 +39,7 @@ const soloAdmin = (req, res, next) => {
   return res.status(403).json({ msg: "Acceso denegado. Solo administradores." });
 };
 
-// ✅ Usuario autenticado (cualquier rol válido: 1 o 2)
+// ✅ Usuario autenticado (cualquier rol válido)
 const usuarioAutenticado = (req, res, next) => {
   next();
 };
@@ -48,24 +47,21 @@ const usuarioAutenticado = (req, res, next) => {
 // ✅ Propietario del recurso O SuperAdmin
 const propietarioOSuperAdmin = (req, res, next) => {
   const { id, id_usuario } = req.params;
-  const userId = req.userId;
-  const rolId = req.rolId;
+  const targetId = Number(id ?? id_usuario);
 
-  const targetId = Number(id || id_usuario);
-
-  if (userId === 72 || rolId === 1 || targetId === userId) {
+  if (req.userId === 72 || req.rolId === 1 || targetId === req.userId) {
     return next();
   }
 
-  return res.status(403).json({ 
-    msg: "Acceso denegado. Solo puedes acceder a tus propios datos." 
+  return res.status(403).json({
+    msg: "Acceso denegado. Solo puedes acceder a tus propios datos."
   });
 };
 
-module.exports = { 
-  validarToken, 
-  soloSuperAdmin, 
+module.exports = {
+  validarToken,
+  soloSuperAdmin,
   soloAdmin,
-  usuarioAutenticado, 
-  propietarioOSuperAdmin 
+  usuarioAutenticado,
+  propietarioOSuperAdmin
 };

@@ -52,22 +52,35 @@ const obtenerProductosStockBajo = async (req, res) => {
     }
 };
 
+// ── Helpers para condiciones positivas (FIX L96, L98, L99, L100) ─────────────
+
+const nombreYPrecioPresentes = (nombre, precio) =>
+    Boolean(nombre) && Boolean(precio);
+
+const precioEsValido = (precio) =>
+    Number(precio) > 0;
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const crearProducto = async (req, res) => {
     try {
         const { nombre_producto, descripcion, precio_base, categoria, stock_disponible } = req.body;
 
-        if (!nombre_producto || !precio_base) {
+        // FIX L96: condición positiva en lugar de !nombre || !precio
+        if (!nombreYPrecioPresentes(nombre_producto, precio_base)) {
             return res.status(400).json({ success: false, message: "Nombre del producto y precio son obligatorios" });
         }
-        if (precio_base <= 0) {
+
+        // FIX L98: condición positiva en lugar de precio <= 0 con negación implícita
+        if (!precioEsValido(precio_base)) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
         const nuevoProducto = await Producto.create({
             nombre_producto,
-            descripcion: descripcion || null,
+            descripcion:      descripcion      || null,
             precio_base,
-            categoria: categoria || null,
+            categoria:        categoria        || null,
             stock_disponible: stock_disponible || 0,
             activo: 1
         });
@@ -87,17 +100,18 @@ const actualizarProducto = async (req, res) => {
         const producto = await Producto.findByPk(id);
         if (!producto) return res.status(404).json({ success: false, message: "Producto no encontrado" });
 
-        if (precio_base !== undefined && precio_base <= 0) {
+        // FIX L99: helper positivo
+        if (precio_base !== undefined && !precioEsValido(precio_base)) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
         await producto.update({
-            nombre_producto:   nombre_producto   ?? producto.nombre_producto,
-            descripcion:       descripcion       !== undefined ? descripcion       : producto.descripcion,
-            precio_base:       precio_base       ?? producto.precio_base,
-            categoria:         categoria         !== undefined ? categoria         : producto.categoria,
-            stock_disponible:  stock_disponible  !== undefined ? stock_disponible  : producto.stock_disponible,
-            activo:            activo            !== undefined ? activo            : producto.activo
+            nombre_producto:  nombre_producto  ?? producto.nombre_producto,
+            descripcion:      descripcion      !== undefined ? descripcion      : producto.descripcion,
+            precio_base:      precio_base      ?? producto.precio_base,
+            categoria:        categoria        !== undefined ? categoria        : producto.categoria,
+            stock_disponible: stock_disponible !== undefined ? stock_disponible : producto.stock_disponible,
+            activo:           activo           !== undefined ? activo           : producto.activo
         });
 
         res.json({ success: true, message: "Producto actualizado exitosamente", data: producto });
@@ -114,7 +128,9 @@ const actualizarProductoParcial = async (req, res) => {
         if (!producto) return res.status(404).json({ success: false, message: "Producto no encontrado" });
 
         const { precio_base } = req.body;
-        if (precio_base !== undefined && precio_base <= 0) {
+
+        // FIX L100: helper positivo
+        if (precio_base !== undefined && !precioEsValido(precio_base)) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
