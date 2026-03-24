@@ -148,8 +148,7 @@ const crearPedido = async (req, res) => {
         const { productos, total, direccion, ciudad, telefono, metodo_pago } = req.body;
         const id_usuario = req.userId;
 
-        console.log('📦 [PEDIDO] Creando pedido:', { productos: productos?.length, total });
-        console.log('👤 [PEDIDO] Usuario autenticado:', id_usuario);
+        console.log('📦 [PEDIDO] Creando pedido:', { cantidad_productos: productos?.length, total });
 
         if (!id_usuario) { await transaction.rollback(); return res.status(401).json({ ok: false, msg: "No autenticado" }); }
         if (!productos || productos.length === 0) { await transaction.rollback(); return res.status(400).json({ ok: false, msg: "El carrito está vacío" }); }
@@ -196,7 +195,7 @@ const crearPedido = async (req, res) => {
                  SELECT ?, 'salida', ?, stock_disponible, 5, CONCAT('Pedido #', ?), NOW() FROM productos WHERE id_producto = ?`,
                 { replacements: [producto.id_producto, cantidad, id_pedido, producto.id_producto], type: db.QueryTypes.INSERT, transaction }
             );
-            console.log(`✅ [PEDIDO] Stock descontado - ${producto.nombre} x${cantidad}`);
+            console.log(`✅ [PEDIDO] Stock descontado - producto x${cantidad}`);
         }
 
         if (direccion && ciudad) {
@@ -329,15 +328,14 @@ const actualizarPedido = async (req, res) => {
             if (!usuario) return res.status(400).json({ msg: "El usuario especificado no existe." });
         }
 
-        // ✅ SonarQube fix: Number.isNaN / Number.parseFloat / Number.parseInt
-        if (total !== undefined && (Number.isNaN(Number(total)) || Number.parseFloat(total) <= 0))
+        if (total !== undefined && (Number.isNaN(Number(total)) || Number(total) <= 0))
             return res.status(400).json({ msg: "El total debe ser un número positivo." });
         if (estado && !ESTADOS_VALIDOS.includes(estado))
             return res.status(400).json({ msg: "Estado no válido.", estadosValidos: ESTADOS_VALIDOS });
 
         const datosLimpios = {};
-        if (id_usuario)            datosLimpios.id_usuario   = Number.parseInt(id_usuario, 10);
-        if (total !== undefined)   datosLimpios.total        = Number.parseFloat(total);
+        if (id_usuario)            datosLimpios.id_usuario   = Number(id_usuario);
+        if (total !== undefined)   datosLimpios.total        = Number(total);
         if (fecha_pedido)          datosLimpios.fecha_pedido = new Date(fecha_pedido);
         if (estado)                datosLimpios.estado       = estado;
         if (metodo_pago)           datosLimpios.metodo_pago  = metodo_pago;

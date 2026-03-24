@@ -34,11 +34,6 @@ const obtenerPqrsPorId = async (req, res) => {
 // Crear PQRS
 const crearPqrs = async (req, res) => {
     try {
-        // ── DEBUG: ver exactamente qué llega del cliente ──────────────────
-        console.log('📦 Body recibido:', JSON.stringify(req.body, null, 2));
-        console.log('🔍 id_usuario recibido:', req.body.id_usuario);
-        // ─────────────────────────────────────────────────────────────────
-
         const { tipo_pqrs, descripcion, nombre, correo, estado, respuesta, id_usuario } = req.body;
 
         if (!nombre || !correo || !tipo_pqrs || !descripcion) {
@@ -56,8 +51,6 @@ const crearPqrs = async (req, res) => {
             id_usuario: id_usuario || null,
             respuesta: respuesta || ''
         });
-
-        console.log('✅ PQRS creada con id_usuario:', nuevoPqrs.id_usuario);
 
         res.status(201).json({
             msg: "PQRS creada exitosamente",
