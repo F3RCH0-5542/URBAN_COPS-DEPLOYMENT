@@ -52,27 +52,15 @@ const obtenerProductosStockBajo = async (req, res) => {
     }
 };
 
-// ── Helpers para condiciones positivas (FIX L96, L98, L99, L100) ─────────────
-
-const nombreYPrecioPresentes = (nombre, precio) =>
-    Boolean(nombre) && Boolean(precio);
-
-const precioEsValido = (precio) =>
-    Number(precio) > 0;
-
-// ─────────────────────────────────────────────────────────────────────────────
-
 const crearProducto = async (req, res) => {
     try {
         const { nombre_producto, descripcion, precio_base, categoria, stock_disponible } = req.body;
 
-        // FIX L96: condición positiva en lugar de !nombre || !precio
-        if (!nombreYPrecioPresentes(nombre_producto, precio_base)) {
+        if (!nombre_producto || !precio_base) {
             return res.status(400).json({ success: false, message: "Nombre del producto y precio son obligatorios" });
         }
 
-        // FIX L98: condición positiva en lugar de precio <= 0 con negación implícita
-        if (!precioEsValido(precio_base)) {
+        if (Number(precio_base) <= 0) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
@@ -100,8 +88,7 @@ const actualizarProducto = async (req, res) => {
         const producto = await Producto.findByPk(id);
         if (!producto) return res.status(404).json({ success: false, message: "Producto no encontrado" });
 
-        // FIX L99: helper positivo
-        if (precio_base !== undefined && !precioEsValido(precio_base)) {
+        if (precio_base !== undefined && Number(precio_base) <= 0) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
@@ -129,8 +116,7 @@ const actualizarProductoParcial = async (req, res) => {
 
         const { precio_base } = req.body;
 
-        // FIX L100: helper positivo
-        if (precio_base !== undefined && !precioEsValido(precio_base)) {
+        if (precio_base !== undefined && Number(precio_base) <= 0) {
             return res.status(400).json({ success: false, message: "El precio debe ser mayor a 0" });
         }
 
