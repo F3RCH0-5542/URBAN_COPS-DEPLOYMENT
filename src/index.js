@@ -21,17 +21,17 @@ app.get("/api", (req, res) => {
     res.status(200).json({ ok: true, msg: "API URBAN_10 funcionando correctamente" });
 });
 
-const Rol          = require("./models/Rol");
-const Usuario      = require("./models/Usuario");
-const Producto     = require("./models/Producto");
-const Pedido       = require("./models/pedido");
-const DetallePedido = require("./models/DetallePedido");
+const Rol             = require("./models/Rol");
+const Usuario         = require("./models/Usuario");
+const Producto        = require("./models/Producto");
+const Pedido          = require("./models/pedido");
+const DetallePedido   = require("./models/DetallePedido");
 const Personalizacion = require("./models/Personalizacion");
-const Pago         = require("./models/Pago");
-const Venta        = require("./models/Venta");
-const Envio        = require("./models/Envio");
-const Inventario   = require("./models/inventario");
-const Pqrs         = require("./models/Pqrs");
+const Pago            = require("./models/Pago");
+const Venta           = require("./models/Venta");
+const Envio           = require("./models/Envio");
+const Inventario      = require("./models/inventario");
+const Pqrs            = require("./models/Pqrs");
 
 Usuario.belongsTo(Rol, { foreignKey: "id_rol" });
 Rol.hasMany(Usuario, { foreignKey: "id_rol" });
@@ -63,7 +63,7 @@ Usuario.hasMany(Pqrs, { foreignKey: "id_usuario" });
 app.use("/api/auth",              require("./routes/auth.routes"));
 app.use("/api/usuarios",          require("./routes/user.routes"));
 app.use("/api/roles",             require("./routes/rol.routes"));
-app.use("/api/productos",         require("./routes/productos.routes"));  // ✅ AGREGADO
+app.use("/api/productos",         require("./routes/productos.routes"));
 app.use("/api/inventario",        require("./routes/inventario.routes"));
 app.use("/api/pedidos",           require("./routes/pedido.routes"));
 app.use("/api/personalizaciones", require("./routes/personalizacion.routes"));
@@ -73,16 +73,14 @@ app.use("/api/envios",            require("./routes/envio.routes"));
 app.use("/api/pqrs",              require("./routes/pqrs.routes"));
 app.use("/api/detalle-pedidos",   require("./routes/detallePedido.routes"));
 
-(async () => {
-    try {
-        await sequelize.authenticate();
-        console.log("Base de datos conectada");
-        await sequelize.sync();
-        console.log("Modelos sincronizados");
-        app.listen(PORT, () => {
-            console.log("Servidor corriendo en http://localhost:" + PORT);
-        });
-    } catch (error) {
-        console.error("Error al iniciar el servidor:", error);
-    }
-})();
+try {
+    await sequelize.authenticate();
+    console.log("Base de datos conectada");
+    await sequelize.sync();
+    console.log("Modelos sincronizados");
+    app.listen(PORT, () => {
+        console.log("Servidor corriendo en http://localhost:" + PORT);
+    });
+} catch (error) {
+    console.error("Error al iniciar el servidor:", error);
+}
