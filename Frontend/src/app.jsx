@@ -75,7 +75,6 @@ function App() {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               {/* NBA */}
               <li className="nav-item dropdown">
-               
                 <button
                   className="nav-link dropdown-toggle fw-bold btn btn-link p-0 text-white text-decoration-none"
                   data-bs-toggle="dropdown"
@@ -92,7 +91,6 @@ function App() {
 
               {/* NFL */}
               <li className="nav-item dropdown">
-               
                 <button
                   className="nav-link dropdown-toggle fw-bold btn btn-link p-0 text-white text-decoration-none"
                   data-bs-toggle="dropdown"
@@ -109,7 +107,7 @@ function App() {
 
               {/* MLB */}
               <li className="nav-item dropdown">
-                          <button
+                <button
                   className="nav-link dropdown-toggle fw-bold btn btn-link p-0 text-white text-decoration-none"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
@@ -145,10 +143,8 @@ function App() {
               />
             </div>
 
-            
             {usuario ? (
               <>
-         
                 <a
                   href="/mi-cuenta"
                   className="btn text-white me-2 d-flex align-items-center gap-1"
@@ -158,8 +154,6 @@ function App() {
                   <i className="bi bi-person-circle" style={{ fontSize: 20 }}></i>
                   <span style={{ fontSize: 14 }}>{usuario.nombre.split(' ')[0]}</span>
                 </a>
-
-                {/* Botón cerrar sesión */}
                 <button
                   className="btn btn-outline-danger me-2"
                   onClick={cerrarSesion}
@@ -169,7 +163,6 @@ function App() {
                 </button>
               </>
             ) : (
-              // Si NO hay sesión, muestra botón de iniciar sesión
               <a href="/login" className="btn text-white me-2">
                 <i className="bi bi-person"></i> Iniciar Sesión
               </a>
@@ -328,6 +321,118 @@ function App() {
         </div>
       </section>
 
+      {/* ===== BANNER DESCARGA APP ===== */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 50%, #0f3460 100%)',
+          padding: '70px 0',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Círculos decorativos de fondo */}
+        <div style={{
+          position: 'absolute', top: -80, right: -80,
+          width: 350, height: 350, borderRadius: '50%',
+          background: 'rgba(229,57,53,0.07)', pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -50, left: -50,
+          width: 250, height: 250, borderRadius: '50%',
+          background: 'rgba(229,57,53,0.05)', pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', top: '30%', left: '20%',
+          width: 120, height: 120, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.02)', pointerEvents: 'none',
+        }} />
+
+        <div className="container text-center" style={{ position: 'relative', zIndex: 1 }}>
+
+          {/* Etiqueta superior */}
+          <div style={{
+            display: 'inline-block',
+            background: 'rgba(229,57,53,0.18)',
+            border: '1px solid rgba(229,57,53,0.35)',
+            borderRadius: 20,
+            padding: '5px 18px',
+            marginBottom: 20,
+          }}>
+            <span style={{ color: '#ff6b6b', fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' }}>
+              📱 App Oficial — Android
+            </span>
+          </div>
+
+          {/* Título */}
+          <h2 style={{
+            color: '#ffffff',
+            fontWeight: 800,
+            fontSize: 'clamp(1.8rem, 4.5vw, 3rem)',
+            marginBottom: 14,
+            lineHeight: 1.2,
+          }}>
+            Lleva <span style={{ color: '#e53935' }}>UrbanCops</span> en tu bolsillo
+          </h2>
+
+          {/* Subtítulo */}
+          <p style={{
+            color: '#9aa3b0',
+            fontSize: 17,
+            maxWidth: 500,
+            margin: '0 auto 16px',
+            lineHeight: 1.6,
+          }}>
+            Compra tus gorras favoritas desde tu celular Android. Rápido, fácil y seguro.
+          </p>
+
+          {/* Info versión */}
+          <p style={{ color: '#555e6e', fontSize: 13, marginBottom: 36 }}>
+            <span style={{ background: 'rgba(255,255,255,0.06)', padding: '3px 10px', borderRadius: 10, marginRight: 8 }}>v1.0.0</span>
+            <span style={{ background: 'rgba(255,255,255,0.06)', padding: '3px 10px', borderRadius: 10, marginRight: 8 }}>70.3 MB</span>
+            <span style={{ background: 'rgba(255,255,255,0.06)', padding: '3px 10px', borderRadius: 10 }}>Android</span>
+          </p>
+
+          {/* Botón de descarga */}
+          <a
+            href="https://github.com/F3RCH0-5542/URBAN_COPS-DEPLOYMENT/releases/download/v1.0.0/app-release.apk"
+            download="UrbanCops-v1.0.0.apk"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 12,
+              background: 'linear-gradient(135deg, #e53935, #c62828)',
+              color: '#fff',
+              padding: '16px 40px',
+              borderRadius: 50,
+              textDecoration: 'none',
+              fontWeight: 700,
+              fontSize: 18,
+              boxShadow: '0 6px 30px rgba(229,57,53,0.45)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              border: '1px solid rgba(255,255,255,0.1)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(229,57,53,0.6)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = '0 6px 30px rgba(229,57,53,0.45)';
+            }}
+          >
+            <i className="bi bi-android2" style={{ fontSize: 24 }}></i>
+            Descargar APK
+          </a>
+
+          {/* Nota de instalación */}
+          <p style={{ color: '#4a5568', fontSize: 12, marginTop: 20 }}>
+            <i className="bi bi-info-circle me-1"></i>
+            Habilita "Fuentes desconocidas" en Ajustes → Seguridad antes de instalar
+          </p>
+        </div>
+      </section>
+      {/* ===== FIN BANNER DESCARGA APP ===== */}
+
       {/* FOOTER */}
       <footer className="bg-black text-white pt-5 pb-3 mt-5">
         <div className="container">
@@ -335,7 +440,6 @@ function App() {
             <div className="col-md-4 mb-4">
               <h5 className="fw-bold">UrbanCops</h5>
               <p>Gorras urbanas exclusivas con estilo auténtico. Representa tu equipo, tu barrio y tu esencia.</p>
-          
               <div>
                 <button
                   className="btn text-white me-3 p-0 border-0 bg-transparent"
