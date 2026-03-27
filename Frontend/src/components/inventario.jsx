@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 
-const API      = "http://localhost:3001/api";
+const API      = "http://72.62.170.223:3001/api";
 const getToken = () => localStorage.getItem("token");
 const authHeaders = () => ({
   "Content-Type": "application/json",
@@ -191,7 +191,7 @@ export default function Inventario() {
             <p style={{ color: "#64748b", margin: "4px 0 0", fontSize: 14 }}>Gestión de productos y movimientos de stock</p>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <button type="button" className="inv-btn-back" onClick={() => { window.location.href = "http://localhost:5173/admin"; }}>
+            <button type="button" className="inv-btn-back" onClick={() => { window.location.href = "http://capsurban.com/admin"; }}>
               ← Admin
             </button>
             <button type="button" className="inv-btn" onClick={() => setShowMovForm((v) => !v)}>

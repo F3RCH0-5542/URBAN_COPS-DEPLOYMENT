@@ -1,7 +1,7 @@
 // personalizacionService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/personalizaciones';
+const API_URL = 'http://72.62.170.223:3001/api/personalizaciones';
 
 // Función helper para obtener headers con token
 const getAuthHeaders = () => {

@@ -4,7 +4,7 @@ import "./ventas.css";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-const API = "http://localhost:3001/api";
+const API = "http://72.62.170.223:3001/api";
 const TOAST_DURATION = 3000;
 const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 

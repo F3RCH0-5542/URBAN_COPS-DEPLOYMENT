@@ -86,7 +86,7 @@ function Registrar() {
 
     try {
       // Llamar a la API de registro
-      const respuesta = await fetch("http://localhost:3001/api/auth/signup", {
+      const respuesta = await fetch("http://72.62.170.223:3001/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

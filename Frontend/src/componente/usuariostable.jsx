@@ -5,7 +5,7 @@ export default function UsuariosTable() {
 
   // Cargar usuarios al montar el componente
   useEffect(() => {
-    fetch("http://localhost/Urban/src/Admin/index.php")
+    fetch("http://72.62.170.223:3001/api/index.php")
       .then((res) => res.json())
       .then((data) => setUsuarios(data))
       .catch((err) => console.error("Error cargando usuarios:", err));
@@ -16,7 +16,7 @@ export default function UsuariosTable() {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
 
     try {
-      const res = await fetch("http://localhost/Urban/src/Admin/eliminar_usuario.php", {
+      const res = await fetch("http://72.62.170.223:3001/api/eliminar_usuario.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_usuario }),

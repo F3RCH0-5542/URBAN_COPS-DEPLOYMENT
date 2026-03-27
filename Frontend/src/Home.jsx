@@ -9,7 +9,7 @@ const C = {
   orange:"#F59E0B",purple:"#8B5CF6",pink:"#EC4899",blue:"#3B82F6",
   indigo:"#7C3AED",ember:"#F97316",teal:"#14B8A6",
 };
-const BASE = "http://localhost:3001/api";
+const BASE = "http://72.62.170.223:3001/api";
 
 const MODULES = [
   { icon:"👥", title:"USUARIOS",    subtitle:"Gestión de usuarios",      color:C.green,  grad:["#064e3b","#065f46"], path:"/usuarios" },

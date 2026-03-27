@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3001/api/registros";
+const API_URL = "http://72.62.170.223:3001/api/registros";
 
 // Listar registros
 export const listRegistros = async (token) => {

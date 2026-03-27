@@ -1,7 +1,7 @@
 // src/micuenta.jsx
 import { useState, useEffect } from 'react';
 
-const API = 'http://localhost:3001';
+const API = 'http://72.62.170.223:3001';
 const getToken = () => localStorage.getItem('token');
 
 const TABS = [

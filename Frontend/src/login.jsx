@@ -18,7 +18,7 @@ function Login() {
 
     try {
       // Llamar a la API de Node.js
-      const respuesta = await fetch("http://localhost:3001/api/auth/login", {
+      const respuesta = await fetch("http://72.62.170.223:3001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ correo, clave }),

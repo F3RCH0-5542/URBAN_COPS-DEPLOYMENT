@@ -230,7 +230,7 @@ export default function Pedido() {
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             <button
               type="button"
-              onClick={() => { window.location.href = "http://localhost:5173/admin"; }}
+              onClick={() => { window.location.href = "http://capsurban.com/admin"; }}
               style={makeBtn(T.gray)}
             >
               ← Admin

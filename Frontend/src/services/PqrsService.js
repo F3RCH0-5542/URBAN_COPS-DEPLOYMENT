@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // ⚠️ IMPORTANTE: Tu backend está en el puerto 3001, NO en 8080
-const API_URL = 'http://localhost:3001/api/pqrs';
+const API_URL = 'http://72.62.170.223:3001/api/pqrs';
 
 // Configurar el token en las peticiones
 const getAuthHeader = () => {

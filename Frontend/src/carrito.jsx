@@ -120,7 +120,7 @@ function Carrito() {
 
       console.log("📤 Enviando datos:", datosCompra);
 
-      const respuesta = await fetch("http://localhost:3001/api/pedidos", {
+      const respuesta = await fetch("http://72.62.170.223:3001/api/pedidos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
