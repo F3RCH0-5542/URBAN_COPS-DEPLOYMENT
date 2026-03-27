@@ -394,7 +394,7 @@ function App() {
 
           {/* Botón de descarga */}
           <a
-            href="https://github.com/F3RCH0-5542/URBAN_COPS-DEPLOYMENT/releases/download/v1.0.0/app-release.apk"
+            href="/app-release.apk"
             download="UrbanCops-v1.0.0.apk"
             style={{
               display: 'inline-flex',
