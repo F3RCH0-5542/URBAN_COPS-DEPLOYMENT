@@ -434,6 +434,7 @@ export default function AdminDashboard() {
               URBAN COPS — Admin
             </span>
             <div style={{ display:"flex", alignItems:"center", gap:18 }}>
+              <a href="/" style={{ color:"#fff", textDecoration:"none", fontSize:13, fontWeight:600, background:"rgba(255,255,255,0.08)", padding:"7px 14px", borderRadius:8, border:"1px solid rgba(255,255,255,0.15)" }}>🏠 Tienda</a>
               <span style={{ color:C.cyan, fontWeight:700, fontSize:14 }}>{userName}</span>
               <LogoutButton onClick={handleLogout} />
             </div>

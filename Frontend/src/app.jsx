@@ -145,6 +145,11 @@ function App() {
 
             {usuario ? (
               <>
+                {(usuario.rol === 'admin' || usuario.rol === 'super_admin') && (
+                  <a href="/admin" className="btn btn-outline-light me-2" style={{ fontSize: '14px', padding: '8px 16px' }}>
+                    <i className="bi bi-shield-lock"></i> Admin
+                  </a>
+                )}
                 <a
                   href="/mi-cuenta"
                   className="btn text-white me-2 d-flex align-items-center gap-1"
