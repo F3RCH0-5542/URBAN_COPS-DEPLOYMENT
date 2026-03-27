@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "http://72.62.170.223:3001/api",
 });
 
-// 🔐 ESTE BLOQUE ES EL FIX
+// 🔐 interceptor igual
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
